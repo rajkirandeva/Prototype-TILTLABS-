@@ -21,40 +21,62 @@ public class WaterDetection : MonoBehaviour
 		switch (other.gameObject.tag)
 		{
             case "Water":
-
-                //Vector3 toTarget = (other.gameObject.transform.position - PlayerController.instance.hip.transform.position).normalized;
-
-                //if (Vector3.Dot(toTarget, gameObject.transform.forward) > 0)
-                //{
-                //    Debug.Log("from front");
-                //    return;
-                //}
-                //else
-                //{
-                //    Debug.Log("from back");
-                //}
-
-
                 float angle = Quaternion.Angle(PlayerController.instance.hip.transform.rotation, other.gameObject.transform.rotation);
 
                 print(angle);
+                
 
-                if(angle >= 80 && angle <= 130)
+                if(angle >= 80 && angle <= 145)
 				{
-                    print("Perfect Dive");
-                    ScoreManager.instance.AddScore(100);
+                    ScoreManager.instance.AddScore(40);
+                    ScoreManager.instance.AddCoins(15);
+                    if (!PlayerController.instance.canRotate)
+					{
+                        PlayerController.instance.isPerfectDive = true;
+                        print("Perfect Dive");
+                        ScoreManager.instance.AddScore(ScoreManager.instance.BonusScore);
+						ScoreManager.instance.AddCoins(ScoreManager.instance.BonusCoins);
+
+
+                        if (angle >= 100 && angle <= 125)
+                        {
+                            ScoreManager.instance.BonusCoins = Random.Range(20, 30);
+                            ScoreManager.instance.BonusScore = Random.Range(70, 100);
+                        }
+						else
+						{
+                            ScoreManager.instance.BonusCoins = Random.Range(10, 20);
+                            ScoreManager.instance.BonusScore = Random.Range(50, 70);
+						}
+					}
+					else
+					{
+                        PlayerController.instance.isPerfectDive = false;
+                        //GameManager.instance.isFailed = true;
+                    }
+
+				}
+				else
+				{
+                    GameManager.instance.isFailed = true;
+                    Debug.Log("GameFailed");
 				}
 
-
-                Invoke("GameOver", 3);
+                Invoke("GameOver", 2f);
+                
 
                 break;
 		}
 	}
 
 
+
+
     public void GameOver()
 	{
         GameManager.instance.GameOver();
-	}
+    }
+
+
+
 }

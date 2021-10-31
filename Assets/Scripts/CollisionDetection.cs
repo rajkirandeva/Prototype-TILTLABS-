@@ -11,7 +11,7 @@ public class CollisionDetection : MonoBehaviour
 		{
 			case "destructable_object":
 
-				if (PlayerController.instance.canRotate)
+				if (PlayerController.instance.canRotate && !GameManager.instance.isFailed)
 				{
 					other.gameObject.transform.parent.GetComponent<DestructableObject>().destruction.SetActive(true);
 					other.gameObject.SetActive(false);
@@ -19,6 +19,7 @@ public class CollisionDetection : MonoBehaviour
 				}
 				else
 				{
+					GameManager.instance.isFailed = true;
 					Invoke("GameOver", 4f);
 				}
 				break;

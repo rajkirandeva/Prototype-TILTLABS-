@@ -30,8 +30,8 @@ public class PlayerController : MonoBehaviour
 
     public float legsTargetPos;
 
-    public float tuckStateVelocity;
-    private float noramlStateVelocity;
+    //public float tuckStateVelocity;
+    //private float noramlStateVelocity;
 
     public int totalTucks;
 
@@ -43,6 +43,11 @@ public class PlayerController : MonoBehaviour
     public bool canTilt = false;
 
     public bool freezeRotation = false;
+
+    public Player mplayerData;
+    private float velocity;
+
+    public bool isPerfectDive = false;
 
 
 	private void Awake()
@@ -65,11 +70,11 @@ public class PlayerController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (canRotate)
         {
-            rb_hips.transform.Rotate(Vector3.right * Time.deltaTime * 200);
+            rb_hips.transform.Rotate(Vector3.right * Time.fixedDeltaTime * mplayerData.rotationSpeed);
             ArmJoint = spineJoints[1].spring;
             ArmJoint.targetPosition = 60;
             spineJoints[1].spring = ArmJoint;
@@ -77,7 +82,7 @@ public class PlayerController : MonoBehaviour
             legsTargetPos = 90;
             rb_rLeg.constraints = RigidbodyConstraints.FreezeRotationX;
             rb_lLeg.constraints = RigidbodyConstraints.FreezeRotationX;
-            rb_hips.AddForce(Vector3.down * tuckStateVelocity, ForceMode.Impulse);
+            rb_hips.AddForce(Vector3.down * mplayerData.tuckVelocity, ForceMode.Impulse);
         }
         else
         {
@@ -87,7 +92,7 @@ public class PlayerController : MonoBehaviour
                 ArmJoint.targetPosition = 150;
                 spineJoints[1].spring = ArmJoint;
                 spineJoints[2].spring = ArmJoint;
-                rb_hips.AddForce(Vector3.down * noramlStateVelocity, ForceMode.Impulse);
+                rb_hips.AddForce(Vector3.down * velocity, ForceMode.Impulse);
             }
 
             rb_rLeg.constraints = RigidbodyConstraints.None;
@@ -110,6 +115,7 @@ public class PlayerController : MonoBehaviour
             JointSpring hipSpringJoint = hipJoints[2].spring;
             hipSpringJoint.targetPosition = tiltValue;
             hipJoints[2].spring = hipSpringJoint;
+
         }
 
 		if (!freezeRotation)
@@ -135,6 +141,7 @@ public class PlayerController : MonoBehaviour
             spineJoints[2].spring = ArmJoint;
             canTilt = true;
             freezeRotation = false;
+            hipJoints[2].connectedMassScale = .5f;
         }
 		else
 		{
@@ -148,12 +155,13 @@ public class PlayerController : MonoBehaviour
 		if (!isJump)
 		{
             hipJoints[2].useLimits = true;
-            rb_hips.AddForce((transform.up * 300 + transform.forward * 150), ForceMode.Impulse);
+            rb_hips.AddForce((transform.up * mplayerData.jumpForce + transform.forward * 150), ForceMode.Impulse);
             //rb_hips.AddForce(transform.forward * 10000f * Time.fixedDeltaTime, ForceMode.Impulse);
             isJump = true;
             StartCoroutine("JumpStretch");
             canTilt = false;
             freezeRotation = true;
+            hipJoints[2].connectedMassScale = 1f;
         }
 		else
 		{
@@ -168,8 +176,9 @@ public class PlayerController : MonoBehaviour
 	{
         yield return new WaitForSeconds(1f);
         legsTargetPos = 60;
-        noramlStateVelocity = 1f;
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1f);
+        velocity = mplayerData.velocity;
+        yield return new WaitForSeconds(2f);
         legsTargetPos = 10;
 	}
 }

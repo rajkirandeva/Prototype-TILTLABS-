@@ -6,13 +6,29 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
+    public delegate void DeligateGameOver();
+    public static event DeligateGameOver gameOverEvent;
 
+    public bool isFailed = false;
+    public enum GameState
+	{
+        menu,
+        gameplay,
+        gameover
+	}
+
+    public GameState gameState;
     public int targetFps;
 
 
     public List<GameObject> woodenBoxSets = new List<GameObject>();
+    public List<GameObject> cylinderSets = new List<GameObject>();
     public Transform woodenboxTrans;
 
+	private void OnEnable()
+	{
+        gameOverEvent += OnOver;
+	}
 
 	private void Awake()
 	{
@@ -24,7 +40,7 @@ public class GameManager : MonoBehaviour
     {
         Application.targetFrameRate = targetFps;
 
-        SetUpWoodenBox();
+
 
 
     }
@@ -37,22 +53,41 @@ public class GameManager : MonoBehaviour
 
 
 
-    public void SetUpWoodenBox()
+    public void SetUpWoodenBox(int count)
 	{
-        SpawnObject(woodenBoxSets[Random.Range(0,woodenBoxSets.Count)], woodenboxTrans);
+        SpawnObject(woodenBoxSets[count], woodenboxTrans.position);
+	}
+
+    public void SetUpCylinder(int count)
+    {
+        SpawnObject(cylinderSets[count], new Vector3(0,woodenboxTrans.transform.position.y,0));
+    }
+
+
+    public void SpawnObject(GameObject mObject, Vector3 mTrans)
+	{
+        Instantiate(mObject, mTrans, Quaternion.identity);
 	}
 
 
-    public void SpawnObject(GameObject mObject, Transform mTrans)
-	{
-        Instantiate(mObject, mTrans.position, Quaternion.identity);
-	}
 
-
-
-    public void GameOver()
+    private void OnOver()
 	{
         UIManager.instance.gameOverHUD.mainHUD.SetActive(true);
         PlayerController.instance.gameObject.SetActive(false);
+        UIManager.instance.gameHUD.mainHUD.SetActive(false);
 	}
+
+    public void GameOver()
+	{
+          gameOverEvent();
+	}
+
+	private void OnDisable()
+	{
+        gameOverEvent -= OnOver;
+	}
+
+
+
 }
