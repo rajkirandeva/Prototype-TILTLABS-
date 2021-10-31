@@ -28,18 +28,18 @@ public class PlayerController : MonoBehaviour
     JointSpring ArmJoint;
     JointSpring legsJoint1, legsJoint2;
 
-    public float legsTargetPos;
+    private float legsTargetPos;
 
     //public float tuckStateVelocity;
     //private float noramlStateVelocity;
 
-    public int totalTucks;
+    private int totalTucks;
 
     public GameObject waterEffect;
 
-    public Vector3 direction;
+    private Vector3 direction;
 
-    public float tiltValue;
+    private float tiltValue;
     public bool canTilt = false;
 
     public bool freezeRotation = false;

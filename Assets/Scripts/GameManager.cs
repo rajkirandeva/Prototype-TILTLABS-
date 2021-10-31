@@ -9,15 +9,10 @@ public class GameManager : MonoBehaviour
     public delegate void DeligateGameOver();
     public static event DeligateGameOver gameOverEvent;
 
+    [HideInInspector]
     public bool isFailed = false;
-    public enum GameState
-	{
-        menu,
-        gameplay,
-        gameover
-	}
 
-    public GameState gameState;
+
     public int targetFps;
 
 
