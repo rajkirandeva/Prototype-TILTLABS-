@@ -74,7 +74,7 @@ public class ScoreManager : MonoBehaviour
 	{
         currentCoins += amount;
         UIManager.instance.gameHUD.coinsText.text = "COINS : " + currentCoins;
-        totalCoins = totalCoins + amount;
+        totalCoins += amount;
         PlayerPrefs.SetInt("totalCoins", totalCoins);
 	}
 

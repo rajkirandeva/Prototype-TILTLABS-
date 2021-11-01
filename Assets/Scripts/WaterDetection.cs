@@ -42,12 +42,16 @@ public class WaterDetection : MonoBehaviour
                         {
                             ScoreManager.instance.BonusCoins = Random.Range(20, 30);
                             ScoreManager.instance.BonusScore = Random.Range(70, 100);
+                            ScoreManager.instance.AddScore(ScoreManager.instance.BonusScore);
+                            ScoreManager.instance.AddCoins(ScoreManager.instance.BonusCoins);
                         }
 						else
 						{
                             ScoreManager.instance.BonusCoins = Random.Range(10, 20);
                             ScoreManager.instance.BonusScore = Random.Range(50, 70);
-						}
+                            ScoreManager.instance.AddScore(ScoreManager.instance.BonusScore);
+                            ScoreManager.instance.AddCoins(ScoreManager.instance.BonusCoins);
+                        }
 					}
 					else
 					{
